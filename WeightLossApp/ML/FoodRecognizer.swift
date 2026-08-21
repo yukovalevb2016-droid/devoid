@@ -70,7 +70,8 @@ final class FoodRecognizer {
                 let out = try model.prediction(from: provider)
                 guard let dict = out.featureValue(for: "classLabelProbs")?.dictionaryValue else { return nil }
                 let probs = dict.compactMapValues { $0 as? Double }
-                return probs.sorted { $0.value > $1.value }.prefix(3).map { (label: $0.key, confidence: $0.value) }
+                let top = probs.sorted { $0.value > $1.value }.prefix(3)
+                return top.map { (label: String(describing: $0.key), confidence: $0.value) }
             } catch {
                 print("Ошибка распознавания: \(error)")
                 return nil
