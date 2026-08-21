@@ -95,13 +95,25 @@ final class Profile {
         return Int(max(1000, tdee + adjust))
     }
 
+    /// Целевой вес рассчитывается автоматически из роста и цели,
+    /// чтобы пользователю не нужно было задавать его вручную.
+    var healthyTargetWeight: Double {
+        let m = heightCm / 100.0
+        let base = 22.0 * m * m
+        switch goal {
+        case .lose: return base
+        case .maintain: return weightKg
+        case .gain: return max(base, weightKg * 1.05)
+        }
+    }
+
     var weightDeltaNeeded: Double {
-        targetWeightKg - weightKg
+        healthyTargetWeight - weightKg
     }
 
     var goalProgress: Double {
         let start = startWeightKg
-        let target = targetWeightKg
+        let target = healthyTargetWeight
         let current = weightKg
         if abs(start - target) < 0.01 { return current <= target ? 1 : 0 }
         let done = (start - current) / (start - target)
