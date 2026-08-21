@@ -22,15 +22,21 @@ final class FoodRecognizer {
         return m
     }
 
-    static func recognize(imageData: Data) async -> [(label: String, confidence: Double)]? {
-        guard let uiImage = UIImage(data: imageData) else { return nil }
-        return await Task.detached(priority: .userInitiated) { () -> [(label: String, confidence: Double)]? in
+    static func recognize(imageData: Data) async -> (results: [(label: String, confidence: Double)]?, error: String?) {
+        guard let uiImage = UIImage(data: imageData) else {
+            return (nil, "Не удалось загрузить изображение")
+        }
+        return await Task.detached(priority: .userInitiated) { () -> (results: [(label: String, confidence: Double)]?, error: String?) in
             do {
                 let model = try loadModel()
-                guard let inputName = model.modelDescription.inputDescriptionsByName.first?.key else { return nil }
+                guard let inputName = model.modelDescription.inputDescriptionsByName.first?.key else {
+                    return (nil, "У модели нет входа")
+                }
                 let size = 224
                 guard let resized = uiImage.resized(to: CGSize(width: size, height: size)),
-                      let cg = resized.cgImage else { return nil }
+                       let cg = resized.cgImage else {
+                    return (nil, "Не удалось подготовить изображение")
+                }
 
                 let shape: [NSNumber] = [1, 3, NSNumber(value: size), NSNumber(value: size)]
                 let array = try MLMultiArray(shape: shape, dataType: .float32)
@@ -68,13 +74,14 @@ final class FoodRecognizer {
 
                 let provider = try MLDictionaryFeatureProvider(dictionary: [inputName: array])
                 let out = try model.prediction(from: provider)
-                guard let dict = out.featureValue(for: "classLabelProbs")?.dictionaryValue else { return nil }
+                guard let dict = out.featureValue(for: "classLabelProbs")?.dictionaryValue else {
+                    return (nil, "Нет выхода classLabelProbs")
+                }
                 let probs = dict.compactMapValues { $0 as? Double }
                 let top = probs.sorted { $0.value > $1.value }.prefix(3)
-                return top.map { (label: String(describing: $0.key), confidence: $0.value) }
+                return (top.map { (label: String(describing: $0.key), confidence: $0.value) }, nil)
             } catch {
-                print("Ошибка распознавания: \(error)")
-                return nil
+                return (nil, "Ошибка модели: \(error.localizedDescription)")
             }
         }.value
     }

@@ -46,8 +46,8 @@ struct FoodLogView: View {
     @State private var calories = ""
     @State private var meal: MealType = .lunch
     @State private var analyzing = false
-    @State private var showManualHint = false
 
+    @State private var recognitionError: String?
     private var todays: [FoodEntry] {
         allEntries.filter { Calendar.current.isDateInToday($0.date) }
     }
@@ -92,15 +92,23 @@ struct FoodLogView: View {
 
                     if analyzing { ProgressView("Анализирую фото…") }
 
+                    if let err = recognitionError, imageData != nil && !analyzing {
+                        Text(err)
+                            .font(.footnote).foregroundStyle(.red)
+                            .padding(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                    }
+
                     if !suggestions.isEmpty {
-                        VStack(alignment: .leading) {
-                            Text("Распознано (выбери):").font(.headline)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Модель распознала (нажми, чтобы выбрать):").font(.headline)
                             ForEach(suggestions, id: \.label) { s in
                                 Button {
                                     selectedLabel = s.label
                                     let est = FoodDatabase.estimateCalories(label: s.label)
                                     name = est.name
-                                    calories = "\(est.calories)"
+                                    calories = est.calories > 0 ? "\(est.calories)" : ""
                                 } label: {
                                     HStack {
                                         Text("\(FoodDatabase.estimateCalories(label: s.label).emoji) \(s.label.capitalized)")
@@ -113,9 +121,11 @@ struct FoodLogView: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                 }
                             }
+                            Text("Если среди вариантов нет нужного блюда — введи название и калории вручную ниже.")
+                                .font(.caption).foregroundStyle(.secondary)
                         }
-                    } else if imageData != nil && !analyzing {
-                        Text("Не удалось распознать автоматически — введи калории вручную или подключи модель FoodClassifier.")
+                    } else if imageData != nil && !analyzing && recognitionError == nil {
+                        Text("Не удалось распознать автоматически — введи калории вручную или выбери из списка после съёмки.")
                             .font(.footnote).foregroundStyle(.secondary)
                     }
 
@@ -184,14 +194,18 @@ struct FoodLogView: View {
     private func analyze(_ data: Data) {
         analyzing = true
         suggestions = []
+        recognitionError = nil
         Task {
-            if let results = await FoodRecognizer.recognize(imageData: data) {
-                await MainActor.run {
+            let (results, error) = await FoodRecognizer.recognize(imageData: data)
+            await MainActor.run {
+                if let results, !results.isEmpty {
                     suggestions = results
-                    analyzing = false
+                    recognitionError = nil
+                } else {
+                    suggestions = []
+                    recognitionError = error
                 }
-            } else {
-                await MainActor.run { analyzing = false; showManualHint = true }
+                analyzing = false
             }
         }
     }
