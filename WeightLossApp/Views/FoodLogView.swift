@@ -51,6 +51,7 @@ struct FoodLogView: View {
     @State private var selectedCalories: [String: String] = [:]
     @State private var name = ""
     @State private var calories = ""
+    @State private var grams = ""
     @State private var meal: MealType = .lunch
     @State private var analyzing = false
 
@@ -166,7 +167,14 @@ struct FoodLogView: View {
                     Group {
                         TextField("Название блюда (вручную)", text: $name)
                         HStack {
-                            TextField("Ккал", text: $calories).keyboardType(.numberPad)
+                            TextField("Граммы", text: $grams).keyboardType(.numberPad)
+                            if let c = autoCalories {
+                                Text("≈ \(c) ккал")
+                                    .font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                        HStack {
+                            TextField("Ккал (авто из базы)", text: $calories).keyboardType(.numberPad)
                             Picker("Приём", selection: $meal) {
                                 ForEach(MealType.allCases) { Text($0.rawValue).tag($0) }
                             }.pickerStyle(.segmented)
@@ -202,6 +210,8 @@ struct FoodLogView: View {
             .onChange(of: imageData) { _, newData in
                 if let newData { analyze(newData) }
             }
+            .onChange(of: name) { _, _ in applyAutoCalories() }
+            .onChange(of: grams) { _, _ in applyAutoCalories() }
         }
     }
 
@@ -328,6 +338,17 @@ struct FoodLogView: View {
         resetAfterSave()
     }
 
+    /// Ккал по базе: калорийность на 100 г × граммы / 100.
+    private var autoCalories: Int? {
+        guard let g = Double(grams.replacingOccurrences(of: ",", with: ".")), g > 0 else { return nil }
+        guard let item = FoodDatabase.match(for: name) else { return nil }
+        return Int(Double(item.caloriesPer100g) * g / 100.0)
+    }
+
+    private func applyAutoCalories() {
+        if let c = autoCalories { calories = "\(c)" }
+    }
+
     private func resetAfterSave() {
         imageData = nil
         suggestions = []
@@ -335,5 +356,6 @@ struct FoodLogView: View {
         selectedCalories = [:]
         name = ""
         calories = ""
+        grams = ""
     }
 }

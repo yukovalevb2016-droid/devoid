@@ -5,7 +5,8 @@ enum Persistence {
     static let configuration = ModelConfiguration(
         schema: Schema([
             Profile.self, Recipe.self, FoodEntry.self,
-            WaterEntry.self, ActivityEntry.self, WeightEntry.self
+            WaterEntry.self, ActivityEntry.self, WeightEntry.self,
+            ProgressPhoto.self
         ]),
         isStoredInMemoryOnly: false,
         allowsSave: true
@@ -16,6 +17,7 @@ enum Persistence {
             return try ModelContainer(
                 for: Profile.self, Recipe.self, FoodEntry.self,
                 WaterEntry.self, ActivityEntry.self, WeightEntry.self,
+                ProgressPhoto.self,
                 configurations: configuration
             )
         } catch {

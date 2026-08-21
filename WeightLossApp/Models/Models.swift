@@ -209,3 +209,16 @@ final class WeightEntry {
         self.note = note
     }
 }
+
+/// Фото прогресса: «до», «после» или промежуточные снимки.
+@Model
+final class ProgressPhoto {
+    var date: Date
+    var note: String
+    @Attribute(.externalStorage) var photo: Data?
+    init(date: Date = .now, note: String = "", photo: Data? = nil) {
+        self.date = date
+        self.note = note
+        self.photo = photo
+    }
+}

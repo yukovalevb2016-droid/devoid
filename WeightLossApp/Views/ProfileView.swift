@@ -38,11 +38,9 @@ struct ProfileView: View {
                     Stepper("Рост: \(Int(p.heightCm)) см", value: $store.profile.heightCm, in: 120...220, step: 1)
                     Stepper("Вес: \(String(format: "%.1f", p.weightKg)) кг", value: $store.profile.weightKg, in: 30...250, step: 0.1)
                     Stepper("Стартовый вес: \(String(format: "%.1f", p.startWeightKg)) кг", value: $store.profile.startWeightKg, in: 30...250, step: 0.1)
-                    HStack {
-                        Text("Целевой вес (авто)")
-                        Spacer()
-                        Text("\(String(format: "%.1f", p.healthyTargetWeight)) кг").bold()
-                    }
+                    Stepper("Целевой вес: \(String(format: "%.1f", p.targetWeightKg)) кг", value: $store.profile.targetWeightKg, in: 30...250, step: 0.1)
+                    Text("Подставляется автоматически из роста и цели, но можно скорректировать вручную.")
+                        .font(.caption).foregroundStyle(.secondary)
                     Stepper("Возраст: \(p.age) лет", value: $store.profile.age, in: 10...100, step: 1)
                 }
 
