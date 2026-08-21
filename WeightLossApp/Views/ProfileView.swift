@@ -8,11 +8,37 @@ struct ProfileView: View {
 
     var body: some View {
         NavigationStack {
+            VStack(spacing: 12) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("ИМТ \(String(format: "%.1f", p.bmi))")
+                            .font(.title2.bold())
+                        Text(p.bmiCategory)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    ZStack {
+                        Circle().stroke(Color.green.opacity(0.2), lineWidth: 8)
+                        Circle().trim(from: 0, to: p.goalProgress)
+                            .stroke(Color.green, lineWidth: 8)
+                            .rotationEffect(.degrees(-90))
+                        Text("\(Int(p.goalProgress * 100))%")
+                            .font(.caption.bold())
+                    }
+                    .frame(width: 64, height: 64)
+                }
+                .padding()
+                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16))
+            }
+            .padding(.horizontal)
+
             Form {
                 Section("Параметры тела") {
                     Stepper("Рост: \(Int(p.heightCm)) см", value: $store.profile.heightCm, in: 120...220, step: 1)
                     Stepper("Вес: \(String(format: "%.1f", p.weightKg)) кг", value: $store.profile.weightKg, in: 30...250, step: 0.1)
-                    Stepper("Цель по весу: \(String(format: "%.1f", p.targetWeightKg)) кг", value: $store.profile.targetWeightKg, in: 30...250, step: 0.1)
+                    Stepper("Стартовый вес: \(String(format: "%.1f", p.startWeightKg)) кг", value: $store.profile.startWeightKg, in: 30...250, step: 0.1)
+                    Stepper("Желательный вес: \(String(format: "%.1f", p.targetWeightKg)) кг", value: $store.profile.targetWeightKg, in: 30...250, step: 0.1)
                     Stepper("Возраст: \(p.age) лет", value: $store.profile.age, in: 10...100, step: 1)
                 }
 
@@ -46,6 +72,12 @@ struct ProfileView: View {
                         } else {
                             Text("набрать \(String(format: "%.1f", delta)) кг").foregroundStyle(.blue).bold()
                         }
+                    }
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Прогресс к цели: \(Int(p.goalProgress * 100))%").font(.footnote).foregroundStyle(.secondary)
+                        ProgressView(value: p.goalProgress)
+                            .tint(.green)
                     }
                 }
             }

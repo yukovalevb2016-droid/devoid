@@ -62,6 +62,17 @@ struct FoodLogView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    if !FoodRecognizer.isModelAvailable {
+                        HStack(spacing: 8) {
+                            Image(systemName: "brain").foregroundStyle(.orange)
+                            Text("Модель FoodClassifier не подключена — калории вводи вручную или выбери из списка после съёмки.")
+                                .font(.footnote).foregroundStyle(.secondary)
+                        }
+                        .padding(10)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+                    }
+
                     summaryCard
 
                     if let data = imageData, let ui = UIImage(data: data) {

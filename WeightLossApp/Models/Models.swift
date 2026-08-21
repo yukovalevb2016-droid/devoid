@@ -38,16 +38,19 @@ final class Profile {
     var heightCm: Double
     var weightKg: Double
     var targetWeightKg: Double
+    var startWeightKg: Double
     var age: Int
     var sex: Sex
     var activity: ActivityLevel
     var goal: Goal
 
     init(heightCm: Double = 165, weightKg: Double = 70, targetWeightKg: Double = 65,
+         startWeightKg: Double? = nil,
          age: Int = 30, sex: Sex = .female, activity: ActivityLevel = .light, goal: Goal = .lose) {
         self.heightCm = heightCm
         self.weightKg = weightKg
         self.targetWeightKg = targetWeightKg
+        self.startWeightKg = startWeightKg ?? weightKg
         self.age = age
         self.sex = sex
         self.activity = activity
@@ -94,6 +97,15 @@ final class Profile {
 
     var weightDeltaNeeded: Double {
         targetWeightKg - weightKg
+    }
+
+    var goalProgress: Double {
+        let start = startWeightKg
+        let target = targetWeightKg
+        let current = weightKg
+        if abs(start - target) < 0.01 { return current <= target ? 1 : 0 }
+        let done = (start - current) / (start - target)
+        return min(1, max(0, done))
     }
 }
 

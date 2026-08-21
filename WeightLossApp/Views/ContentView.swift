@@ -27,5 +27,6 @@ struct ContentView: View {
             RemindersView()
                 .tabItem { Label("Напоминания", systemImage: "bell.fill") }
         }
+        .tint(.green)
     }
 }
