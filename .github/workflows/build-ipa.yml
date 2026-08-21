@@ -15,69 +15,29 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Set up Apple signing keychain
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      - name: Build app (unsigned, for device)
         run: |
-          KEYCHAIN=build.keychain-db
-          security create-keychain -p "temp" "$KEYCHAIN"
-          security set-keychain-settings -t 3600 -u "$KEYCHAIN"
-          security unlock-keychain -p "temp" "$KEYCHAIN"
-          security add-generic-password -U -s "com.apple.account.AppleAccount" -a "$APPLE_ID" -w "$APPLE_PASSWORD" "$KEYCHAIN"
-          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
-          security default-keychain -s "$KEYCHAIN"
-        continue-on-error: true
-
-      - name: Build archive
-        env:
-          TEAM: ${{ secrets.APPLE_TEAM_ID }}
-          BUNDLE_ID: ${{ secrets.BUNDLE_ID }}
-        run: |
-          BID="${BUNDLE_ID:-com.example.WeightLossApp}"
-          xcodebuild archive \
+          xcodebuild build \
             -project WeightLossApp.xcodeproj \
             -scheme WeightLossApp \
             -sdk iphoneos \
             -configuration Release \
-            -archivePath build/WeightLossApp.xcarchive \
-            PRODUCT_BUNDLE_IDENTIFIER="$BID" \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM="$TEAM" \
-            -allowProvisioningUpdates
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY=""
 
-      - name: Export IPA
-        env:
-          TEAM: ${{ secrets.APPLE_TEAM_ID }}
-          BUNDLE_ID: ${{ secrets.BUNDLE_ID }}
+      - name: Package IPA
         run: |
-          BID="${BUNDLE_ID:-com.example.WeightLossApp}"
-          cat > ExportOptions.plist <<EOPL
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>development</string>
-            <key>signingStyle</key>
-            <string>automatic</string>
-            <key>teamID</key>
-            <string>$TEAM</string>
-            <key>compileBitcode</key>
-            <false/>
-            <key>stripSwiftSymbols</key>
-            <true/>
-          </dict>
-          </plist>
-          EOPL
-          xcodebuild -exportArchive \
-            -archivePath build/WeightLossApp.xcarchive \
-            -exportPath build/ipa \
-            -exportOptionsPlist ExportOptions.plist \
-            -allowProvisioningUpdates
+          APP=$(find ~/Library/Developer/Xcode/DerivedData -name "WeightLossApp.app" -type d | head -n1)
+          echo "Found app at: $APP"
+          mkdir -p build/ipa/Payload
+          cp -R "$APP" build/ipa/Payload/
+          cd build/ipa
+          zip -r WeightLossApp.ipa Payload
+          cd ../..
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: WeightLossApp-ipa
-          path: build/ipa/*.ipa
+          path: build/ipa/WeightLossApp.ipa
