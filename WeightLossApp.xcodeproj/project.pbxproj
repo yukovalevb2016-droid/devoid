@@ -8,23 +8,23 @@
 
 /* Begin PBXFileReference section */
 		FR_APP = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightLossAppApp.swift; sourceTree = "<group>"; };
-		FR_MODELS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		FR_PERSIST = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		FR_FOODDB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDatabase.swift; sourceTree = "<group>"; };
-		FR_RECIPESDATA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesData.swift; sourceTree = "<group>"; };
-		FR_FOODREC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodRecognizer.swift; sourceTree = "<group>"; };
-		FR_WEEKCALC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekCalculator.swift; sourceTree = "<group>"; };
-		FR_REMINDER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderManager.swift; sourceTree = "<group>"; };
-		FR_PROFILESTORE = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
-		FR_CONTENT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		FR_PROFILEVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
-		FR_RECIPESVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesView.swift; sourceTree = "<group>"; };
-		FR_FOODLOG = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLogView.swift; sourceTree = "<group>"; };
-		FR_WATER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
-		FR_ACTIVITY = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
-		FR_WEIGHT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
-		FR_WEEK = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
-		FR_REMINDERS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersView.swift; sourceTree = "<group>"; };
+		FR_MODELS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Models.swift; sourceTree = "<group>"; };
+		FR_PERSIST = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data/Persistence.swift; sourceTree = "<group>"; };
+		FR_FOODDB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data/FoodDatabase.swift; sourceTree = "<group>"; };
+		FR_RECIPESDATA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data/RecipesData.swift; sourceTree = "<group>"; };
+		FR_FOODREC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ML/FoodRecognizer.swift; sourceTree = "<group>"; };
+		FR_WEEKCALC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/WeekCalculator.swift; sourceTree = "<group>"; };
+		FR_REMINDER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/ReminderManager.swift; sourceTree = "<group>"; };
+		FR_PROFILESTORE = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/ProfileStore.swift; sourceTree = "<group>"; };
+		FR_CONTENT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
+		FR_PROFILEVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
+		FR_RECIPESVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/RecipesView.swift; sourceTree = "<group>"; };
+		FR_FOODLOG = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/FoodLogView.swift; sourceTree = "<group>"; };
+		FR_WATER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WaterView.swift; sourceTree = "<group>"; };
+		FR_ACTIVITY = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ActivityView.swift; sourceTree = "<group>"; };
+		FR_WEIGHT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WeightView.swift; sourceTree = "<group>"; };
+		FR_WEEK = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WeekView.swift; sourceTree = "<group>"; };
+		FR_REMINDERS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/RemindersView.swift; sourceTree = "<group>"; };
 		FR_INFOPLIST = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FR_PRODUCT = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeightLossApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
