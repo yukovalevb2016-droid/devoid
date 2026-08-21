@@ -5,6 +5,9 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   build-ipa:
     runs-on: macos-14
@@ -36,8 +39,12 @@ jobs:
           zip -r WeightLossApp.ipa Payload
           cd ../..
 
-      - name: Upload IPA
-        uses: actions/upload-artifact@v4
-        with:
-          name: WeightLossApp-ipa
-          path: build/ipa/WeightLossApp.ipa
+      - name: Publish to Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete ipa --yes 2>/dev/null || true
+          gh release create ipa build/ipa/WeightLossApp.ipa \
+            --title "Сборка IPA" \
+            --notes "Неподписанный IPA. Ставить через AltStore/SideStore (они подпишут его твоим Apple ID)." \
+            --latest
