@@ -18,10 +18,14 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
-      - name: Fetch Core ML model (FoodClassifier)
+      - name: Build Core ML model (FoodClassifier)
         run: |
-          curl -fsSL -o WeightLossApp/FoodClassifier.mlmodel "https://docs-assets.developer.apple.com/coreml/models/MobileNetV2.mlmodel" \
-            || echo "::warning::Model download failed - add WeightLossApp/FoodClassifier.mlmodel manually before building."
+          if [ -f WeightLossApp/FoodClassifier.mlmodel ]; then
+            echo "Model already present, skipping generation."
+          else
+            python3 -m pip install --quiet coremltools torchvision
+            python3 WeightLossApp/build_model.py
+          fi
 
       - name: Build for iOS Simulator (no signing)
         run: |
