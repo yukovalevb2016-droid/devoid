@@ -31,6 +31,11 @@ jobs:
           security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
           security default-keychain -s "$KEYCHAIN"
 
+      - name: Fetch Core ML model (FoodClassifier)
+        run: |
+          curl -fsSL -o WeightLossApp/FoodClassifier.mlmodel "https://docs-assets.developer.apple.com/coreml/models/MobileNetV2.mlmodel" \
+            || echo "::warning::Model download failed - add WeightLossApp/FoodClassifier.mlmodel manually before building."
+
       - name: Build archive
         env:
           CI: "true"

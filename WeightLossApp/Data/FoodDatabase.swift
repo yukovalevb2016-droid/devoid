@@ -28,7 +28,15 @@ struct FoodDatabase {
         FoodItem(label: "potato", caloriesPer100g: 77, typicalPortionG: 150, emoji: "🥔"),
         FoodItem(label: "carrot", caloriesPer100g: 41, typicalPortionG: 100, emoji: "🥕"),
         FoodItem(label: "tomato", caloriesPer100g: 18, typicalPortionG: 100, emoji: "🍅"),
-        FoodItem(label: "cucumber", caloriesPer100g: 15, typicalPortionG: 100, emoji: "🥒")
+        FoodItem(label: "cucumber", caloriesPer100g: 15, typicalPortionG: 100, emoji: "🥒"),
+        FoodItem(label: "broccoli", caloriesPer100g: 34, typicalPortionG: 150, emoji: "🥦"),
+        FoodItem(label: "mushroom", caloriesPer100g: 22, typicalPortionG: 100, emoji: "🍄"),
+        FoodItem(label: "strawberry", caloriesPer100g: 32, typicalPortionG: 100, emoji: "🍓"),
+        FoodItem(label: "lettuce", caloriesPer100g: 15, typicalPortionG: 100, emoji: "🥬"),
+        FoodItem(label: "corn", caloriesPer100g: 86, typicalPortionG: 100, emoji: "🌽"),
+        FoodItem(label: "hotdog", caloriesPer100g: 290, typicalPortionG: 100, emoji: "🌭"),
+        FoodItem(label: "ice cream", caloriesPer100g: 207, typicalPortionG: 100, emoji: "🍦"),
+        FoodItem(label: "cheese", caloriesPer100g: 402, typicalPortionG: 50, emoji: "🧀")
     ]
 
     static func match(for query: String) -> FoodItem? {

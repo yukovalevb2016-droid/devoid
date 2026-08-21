@@ -18,6 +18,11 @@ jobs:
       - name: Show Xcode version
         run: xcodebuild -version
 
+      - name: Fetch Core ML model (FoodClassifier)
+        run: |
+          curl -fsSL -o WeightLossApp/FoodClassifier.mlmodel "https://docs-assets.developer.apple.com/coreml/models/MobileNetV2.mlmodel" \
+            || echo "::warning::Model download failed - add WeightLossApp/FoodClassifier.mlmodel manually before building."
+
       - name: Build for iOS Simulator (no signing)
         run: |
           xcodebuild build \
