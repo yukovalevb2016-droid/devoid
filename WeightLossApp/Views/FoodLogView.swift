@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import SwiftData
+import AVFoundation
 
 struct ImagePicker: UIViewControllerRepresentable {
     var sourceType: UIImagePickerController.SourceType
@@ -85,12 +86,7 @@ struct FoodLogView: View {
 
                     HStack {
                         Button {
-                            if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                                pickerSource = .camera
-                                showPicker = true
-                            } else {
-                                showCameraAlert = true
-                            }
+                            openCamera()
                         } label: {
                             Label("Камера", systemImage: "camera").frame(maxWidth: .infinity)
                         }.buttonStyle(.bordered)
@@ -226,6 +222,32 @@ struct FoodLogView: View {
                     Button { context.delete(e); try? context.save() } label: { Image(systemName: "trash").foregroundStyle(.red) }
                 }
             }
+        }
+    }
+
+    private func openCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            showCameraAlert = true
+            return
+        }
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .authorized:
+            pickerSource = .camera
+            showPicker = true
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    if granted {
+                        pickerSource = .camera
+                        showPicker = true
+                    } else {
+                        showCameraAlert = true
+                    }
+                }
+            }
+        default:
+            showCameraAlert = true
         }
     }
 
