@@ -11,6 +11,11 @@ struct ImagePicker: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
+        if sourceType == .camera {
+            picker.cameraCaptureMode = .photo
+            picker.cameraDevice = .rear
+            picker.showsCameraControls = true
+        }
         picker.delegate = context.coordinator
         return picker
     }
@@ -38,8 +43,8 @@ struct FoodLogView: View {
     @EnvironmentObject private var store: ProfileStore
     @Query(sort: \FoodEntry.date, order: .reverse) private var allEntries: [FoodEntry]
 
-    @State private var showPicker = false
-    @State private var pickerSource: UIImagePickerController.SourceType = .photoLibrary
+    @State private var showLibraryPicker = false
+    @State private var showCameraPicker = false
     @State private var imageData: Data?
     @State private var suggestions: [(label: String, confidence: Double)] = []
     @State private var selectedLabels: [String] = []
@@ -90,7 +95,7 @@ struct FoodLogView: View {
                         } label: {
                             Label("Камера", systemImage: "camera").frame(maxWidth: .infinity)
                         }.buttonStyle(.bordered)
-                        Button { pickerSource = .photoLibrary; showPicker = true } label: {
+                        Button { showLibraryPicker = true } label: {
                             Label("Галерея", systemImage: "photo").frame(maxWidth: .infinity)
                         }.buttonStyle(.bordered)
                     }
@@ -183,8 +188,11 @@ struct FoodLogView: View {
                 .padding()
             }
             .navigationTitle("Дневник еды")
-            .sheet(isPresented: $showPicker) {
-                ImagePicker(sourceType: pickerSource, imageData: $imageData)
+            .sheet(isPresented: $showLibraryPicker) {
+                ImagePicker(sourceType: .photoLibrary, imageData: $imageData)
+            }
+            .sheet(isPresented: $showCameraPicker) {
+                ImagePicker(sourceType: .camera, imageData: $imageData)
             }
             .alert("Камера недоступна", isPresented: $showCameraAlert) {
                 Button("ОК", role: .cancel) {}
@@ -233,14 +241,12 @@ struct FoodLogView: View {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         switch status {
         case .authorized:
-            pickerSource = .camera
-            showPicker = true
+            showCameraPicker = true
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
                 DispatchQueue.main.async {
                     if granted {
-                        pickerSource = .camera
-                        showPicker = true
+                        showCameraPicker = true
                     } else {
                         showCameraAlert = true
                     }
