@@ -24,7 +24,7 @@ final class FoodRecognizer {
 
     static func recognize(imageData: Data) async -> [(label: String, confidence: Double)]? {
         guard let uiImage = UIImage(data: imageData) else { return nil }
-        return await Task.detached(priority: .userInitiated) {
+        return await Task.detached(priority: .userInitiated) { () -> [(label: String, confidence: Double)]? in
             do {
                 let model = try loadModel()
                 guard let inputName = model.modelDescription.inputDescriptionsByName.first?.key else { return nil }
@@ -32,7 +32,8 @@ final class FoodRecognizer {
                 guard let resized = uiImage.resized(to: CGSize(width: size, height: size)),
                       let cg = resized.cgImage else { return nil }
 
-                let array = try MLMultiArray(shape: [1, 3, size, size], dataType: .float32)
+                let shape: [NSNumber] = [1, 3, NSNumber(value: size), NSNumber(value: size)]
+                let array = try MLMultiArray(shape: shape, dataType: .float32)
                 let mean: [Float] = [0.485, 0.456, 0.406]
                 let std: [Float] = [0.229, 0.224, 0.225]
 
@@ -67,7 +68,8 @@ final class FoodRecognizer {
 
                 let provider = try MLDictionaryFeatureProvider(dictionary: [inputName: array])
                 let out = try model.prediction(from: provider)
-                guard let probs = out.featureValue(for: "classLabelProbs")?.dictionaryValue as? [String: Double] else { return nil }
+                guard let dict = out.featureValue(for: "classLabelProbs")?.dictionaryValue else { return nil }
+                let probs = dict.compactMapValues { $0 as? Double }
                 return probs.sorted { $0.value > $1.value }.prefix(3).map { (label: $0.key, confidence: $0.value) }
             } catch {
                 print("Ошибка распознавания: \(error)")
