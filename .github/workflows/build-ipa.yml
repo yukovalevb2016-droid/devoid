@@ -41,7 +41,7 @@ jobs:
           if [ -f WeightLossApp/FoodClassifier.mlmodel ]; then
             echo "Model already present, skipping generation."
           else
-            python3 -m pip install --quiet coremltools torchvision
+            python3 -m pip install --quiet coremltools "torch==2.7.0" "torchvision==0.22.0"
             python3 WeightLossApp/build_model.py
           fi
 

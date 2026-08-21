@@ -23,7 +23,7 @@ def main() -> None:
         traced,
         inputs=[
             ct.ImageType(
-                shape=(1, 224, 224, 3),
+                shape=(1, 3, 224, 224),
                 scale=scale,
                 bias=bias,
                 color_layout="RGB",
