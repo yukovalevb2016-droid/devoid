@@ -1,0 +1,18 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+*.xcuserdata/
+*.moved-aside
+*.hmap
+*.ipa
+*.xcarchive
+.build/
+*.app
+FoodClassifier.mlmodel
+FoodClassifier.mlpackage
+
+# SwiftPM
+.swiftpm/
+
+# OS
+.DS_Store

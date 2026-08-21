@@ -1,0 +1,263 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXFileReference section */
+		FR_APP = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightLossAppApp.swift; sourceTree = "<group>"; };
+		FR_MODELS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		FR_PERSIST = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
+		FR_FOODDB = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodDatabase.swift; sourceTree = "<group>"; };
+		FR_RECIPESDATA = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesData.swift; sourceTree = "<group>"; };
+		FR_FOODREC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodRecognizer.swift; sourceTree = "<group>"; };
+		FR_WEEKCALC = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekCalculator.swift; sourceTree = "<group>"; };
+		FR_REMINDER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderManager.swift; sourceTree = "<group>"; };
+		FR_PROFILESTORE = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
+		FR_CONTENT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		FR_PROFILEVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		FR_RECIPESVIEW = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipesView.swift; sourceTree = "<group>"; };
+		FR_FOODLOG = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLogView.swift; sourceTree = "<group>"; };
+		FR_WATER = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterView.swift; sourceTree = "<group>"; };
+		FR_ACTIVITY = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		FR_WEIGHT = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightView.swift; sourceTree = "<group>"; };
+		FR_WEEK = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekView.swift; sourceTree = "<group>"; };
+		FR_REMINDERS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersView.swift; sourceTree = "<group>"; };
+		FR_INFOPLIST = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FR_PRODUCT = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeightLossApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXBuildFile section */
+		BF_APP = {isa = PBXBuildFile; fileRef = FR_APP; };
+		BF_MODELS = {isa = PBXBuildFile; fileRef = FR_MODELS; };
+		BF_PERSIST = {isa = PBXBuildFile; fileRef = FR_PERSIST; };
+		BF_FOODDB = {isa = PBXBuildFile; fileRef = FR_FOODDB; };
+		BF_RECIPESDATA = {isa = PBXBuildFile; fileRef = FR_RECIPESDATA; };
+		BF_FOODREC = {isa = PBXBuildFile; fileRef = FR_FOODREC; };
+		BF_WEEKCALC = {isa = PBXBuildFile; fileRef = FR_WEEKCALC; };
+		BF_REMINDER = {isa = PBXBuildFile; fileRef = FR_REMINDER; };
+		BF_PROFILESTORE = {isa = PBXBuildFile; fileRef = FR_PROFILESTORE; };
+		BF_CONTENT = {isa = PBXBuildFile; fileRef = FR_CONTENT; };
+		BF_PROFILEVIEW = {isa = PBXBuildFile; fileRef = FR_PROFILEVIEW; };
+		BF_RECIPESVIEW = {isa = PBXBuildFile; fileRef = FR_RECIPESVIEW; };
+		BF_FOODLOG = {isa = PBXBuildFile; fileRef = FR_FOODLOG; };
+		BF_WATER = {isa = PBXBuildFile; fileRef = FR_WATER; };
+		BF_ACTIVITY = {isa = PBXBuildFile; fileRef = FR_ACTIVITY; };
+		BF_WEIGHT = {isa = PBXBuildFile; fileRef = FR_WEIGHT; };
+		BF_WEEK = {isa = PBXBuildFile; fileRef = FR_WEEK; };
+		BF_REMINDERS = {isa = PBXBuildFile; fileRef = FR_REMINDERS; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BP_FW = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		GR_MAIN = {isa = PBXGroup; children = (GR_APP); sourceTree = "<group>"; };
+		GR_APP = {isa = PBXGroup; children = (FR_PRODUCT, GR_SOURCE); name = WeightLossApp; sourceTree = "<group>"; };
+		GR_SOURCE = {isa = PBXGroup; children = (
+			FR_APP,
+			FR_MODELS,
+			FR_PERSIST,
+			FR_FOODDB,
+			FR_RECIPESDATA,
+			FR_FOODREC,
+			FR_WEEKCALC,
+			FR_REMINDER,
+			FR_PROFILESTORE,
+			FR_CONTENT,
+			FR_PROFILEVIEW,
+			FR_RECIPESVIEW,
+			FR_FOODLOG,
+			FR_WATER,
+			FR_ACTIVITY,
+			FR_WEIGHT,
+			FR_WEEK,
+			FR_REMINDERS,
+			FR_INFOPLIST
+		); path = WeightLossApp; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		TG_APP = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CL_TGT;
+			buildPhases = (BP_SRC, BP_FW, BP_RES);
+			buildRules = ();
+			dependencies = ();
+			name = WeightLossApp;
+			productName = WeightLossApp;
+			productReference = FR_PRODUCT;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		PR_PROJECT = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					TG_APP = { CreatedOnToolsVersion = 15.0; };
+				};
+			};
+			buildConfigurationList = CL_PROJ;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ru;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, ru);
+			mainGroup = GR_MAIN;
+			productRefGroup = GR_APP;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (TG_APP);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BP_RES = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BP_SRC = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF_APP,
+				BF_MODELS,
+				BF_PERSIST,
+				BF_FOODDB,
+				BF_RECIPESDATA,
+				BF_FOODREC,
+				BF_WEEKCALC,
+				BF_REMINDER,
+				BF_PROFILESTORE,
+				BF_CONTENT,
+				BF_PROFILEVIEW,
+				BF_RECIPESVIEW,
+				BF_FOODLOG,
+				BF_WATER,
+				BF_ACTIVITY,
+				BF_WEIGHT,
+				BF_WEEK,
+				BF_REMINDERS
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		CFG_PD = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = "gnu17";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CFG_PR = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = "gnu17";
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CFG_TD = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WeightLossApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.WeightLossApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Debug;
+		};
+		CFG_TR = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WeightLossApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks");
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.WeightLossApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CL_PROJ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (CFG_PD, CFG_PR);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CL_TGT = {
+			isa = XCConfigurationList;
+			buildConfigurations = (CFG_TD, CFG_TR);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = PR_PROJECT;
+}

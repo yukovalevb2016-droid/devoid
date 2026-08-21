@@ -1,0 +1,29 @@
+name: Build iOS
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build for iOS Simulator (no signing)
+        run: |
+          xcodebuild build \
+            -project WeightLossApp/WeightLossApp.xcodeproj \
+            -scheme WeightLossApp \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
