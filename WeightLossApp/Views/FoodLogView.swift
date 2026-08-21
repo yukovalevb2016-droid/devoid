@@ -41,13 +41,15 @@ struct FoodLogView: View {
     @State private var pickerSource: UIImagePickerController.SourceType = .photoLibrary
     @State private var imageData: Data?
     @State private var suggestions: [(label: String, confidence: Double)] = []
-    @State private var selectedLabel = ""
+    @State private var selectedLabels: [String] = []
+    @State private var selectedCalories: [String: String] = [:]
     @State private var name = ""
     @State private var calories = ""
     @State private var meal: MealType = .lunch
     @State private var analyzing = false
 
     @State private var recognitionError: String?
+    @State private var showCameraAlert = false
     private var todays: [FoodEntry] {
         allEntries.filter { Calendar.current.isDateInToday($0.date) }
     }
@@ -82,7 +84,14 @@ struct FoodLogView: View {
                     }
 
                     HStack {
-                        Button { pickerSource = .camera; showPicker = true } label: {
+                        Button {
+                            if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                                pickerSource = .camera
+                                showPicker = true
+                            } else {
+                                showCameraAlert = true
+                            }
+                        } label: {
                             Label("Камера", systemImage: "camera").frame(maxWidth: .infinity)
                         }.buttonStyle(.bordered)
                         Button { pickerSource = .photoLibrary; showPicker = true } label: {
@@ -100,37 +109,61 @@ struct FoodLogView: View {
                             .background(Color.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
                     }
 
-                    if !suggestions.isEmpty {
+                    let foodSuggestions = suggestions.filter { FoodDatabase.match(for: $0.label) != nil }
+
+                    if !foodSuggestions.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Модель распознала (нажми, чтобы выбрать):").font(.headline)
-                            ForEach(suggestions, id: \.label) { s in
+                            Text("Распознанные продукты (нажми, чтобы выбрать несколько):").font(.headline)
+                            ForEach(foodSuggestions, id: \.label) { s in
+                                let info = FoodDatabase.info(for: s.label)
                                 Button {
-                                    selectedLabel = s.label
-                                    let est = FoodDatabase.estimateCalories(label: s.label)
-                                    name = est.name
-                                    calories = est.calories > 0 ? "\(est.calories)" : ""
+                                    toggleSelection(s.label)
                                 } label: {
                                     HStack {
-                                        Text("\(FoodDatabase.estimateCalories(label: s.label).emoji) \(s.label.capitalized)")
+                                        Text("\(info.emoji) \(info.name)")
                                         Spacer()
                                         Text("\(Int(s.confidence * 100))%")
-                                        if selectedLabel == s.label { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }
+                                        if selectedLabels.contains(s.label) {
+                                            Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                                        }
                                     }
                                     .padding(8)
-                                    .background(selectedLabel == s.label ? Color.green.opacity(0.15) : Color.gray.opacity(0.1))
+                                    .background(selectedLabels.contains(s.label) ? Color.green.opacity(0.15) : Color.gray.opacity(0.1))
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                                 }
                             }
-                            Text("Если среди вариантов нет нужного блюда — введи название и калории вручную ниже.")
-                                .font(.caption).foregroundStyle(.secondary)
                         }
                     } else if imageData != nil && !analyzing && recognitionError == nil {
-                        Text("Не удалось распознать автоматически — введи калории вручную или выбери из списка после съёмки.")
+                        Text("Еду не удалось распознать — выбери продукты вручную ниже или введи название.")
                             .font(.footnote).foregroundStyle(.secondary)
                     }
 
+                    if !selectedLabels.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Выбрано:").font(.headline)
+                            ForEach(selectedLabels, id: \.self) { label in
+                                let info = FoodDatabase.info(for: label)
+                                HStack {
+                                    Text("\(info.emoji) \(info.name)")
+                                    Spacer()
+                                    TextField("Ккал", text: calorieBinding(for: label))
+                                        .keyboardType(.numberPad)
+                                        .frame(width: 72)
+                                        .textFieldStyle(.roundedBorder)
+                                }
+                            }
+                            Button {
+                                saveSelected()
+                            } label: {
+                                Label("Добавить выбранное (\(selectedLabels.count))", systemImage: "checkmark")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+                    }
+
                     Group {
-                        TextField("Название блюда", text: $name)
+                        TextField("Название блюда (вручную)", text: $name)
                         HStack {
                             TextField("Ккал", text: $calories).keyboardType(.numberPad)
                             Picker("Приём", selection: $meal) {
@@ -141,12 +174,12 @@ struct FoodLogView: View {
                     .textFieldStyle(.roundedBorder)
 
                     Button {
-                        saveEntry()
+                        saveManual()
                     } label: {
-                        Label("Сохранить приём пищи", systemImage: "checkmark")
+                        Label("Добавить вручную", systemImage: "plus")
                             .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.bordered)
                     .disabled(name.isEmpty || Int(calories) == nil)
 
                     todayList
@@ -156,6 +189,11 @@ struct FoodLogView: View {
             .navigationTitle("Дневник еды")
             .sheet(isPresented: $showPicker) {
                 ImagePicker(sourceType: pickerSource, imageData: $imageData)
+            }
+            .alert("Камера недоступна", isPresented: $showCameraAlert) {
+                Button("ОК", role: .cancel) {}
+            } message: {
+                Text("Разреши доступ к камере в Настройки → Стройность → Камера, либо используй кнопку «Галерея».")
             }
             .onChange(of: imageData) { _, newData in
                 if let newData { analyze(newData) }
@@ -194,6 +232,8 @@ struct FoodLogView: View {
     private func analyze(_ data: Data) {
         analyzing = true
         suggestions = []
+        selectedLabels = []
+        selectedCalories = [:]
         recognitionError = nil
         Task {
             let (results, error) = await FoodRecognizer.recognize(imageData: data)
@@ -210,13 +250,62 @@ struct FoodLogView: View {
         }
     }
 
-    private func saveEntry() {
+    private func calorieBinding(for label: String) -> Binding<String> {
+        Binding(
+            get: { selectedCalories[label] ?? "" },
+            set: { selectedCalories[label] = $0 }
+        )
+    }
+
+    private func toggleSelection(_ label: String) {
+        if let idx = selectedLabels.firstIndex(of: label) {
+            selectedLabels.remove(at: idx)
+            selectedCalories[label] = nil
+        } else {
+            selectedLabels.append(label)
+            let info = FoodDatabase.info(for: label)
+            selectedCalories[label] = info.calories > 0 ? "\(info.calories)" : ""
+        }
+    }
+
+    private func saveSelected() {
+        for label in selectedLabels {
+            let info = FoodDatabase.info(for: label)
+            let calText = selectedCalories[label] ?? ""
+            let cal = Int(calText) ?? info.calories
+            let entry = FoodEntry(
+                name: info.name,
+                calories: max(0, cal),
+                meal: meal,
+                source: "ИИ: \(label)",
+                photo: imageData
+            )
+            context.insert(entry)
+        }
+        try? context.save()
+        resetAfterSave()
+    }
+
+    private func saveManual() {
         guard let cal = Int(calories), !name.isEmpty else { return }
-        let photo = imageData
-        let source = selectedLabel.isEmpty ? "Ручной ввод" : "ИИ: \(selectedLabel)"
-        let entry = FoodEntry(name: name, calories: cal, meal: meal, source: source, photo: photo)
+        let entry = FoodEntry(
+            name: name,
+            calories: cal,
+            meal: meal,
+            source: "Ручной ввод",
+            photo: imageData
+        )
         context.insert(entry)
         try? context.save()
-        imageData = nil; suggestions = []; selectedLabel = ""; name = ""; calories = ""
+        resetAfterSave()
+    }
+
+    private func resetAfterSave() {
+        imageData = nil
+        suggestions = []
+        selectedLabels = []
+        selectedCalories = [:]
+        name = ""
+        calories = ""
     }
 }

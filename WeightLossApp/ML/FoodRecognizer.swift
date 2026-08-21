@@ -80,7 +80,7 @@ final class FoodRecognizer {
                     return (nil, "Нет выхода classLabel_probs")
                 }
                 let probs = dict.compactMapValues { $0 as? Double }
-                let top = probs.sorted { $0.value > $1.value }.prefix(3)
+                let top = probs.sorted { $0.value > $1.value }.prefix(5)
                 return (top.map { (label: String(describing: $0.key), confidence: $0.value) }, nil)
             } catch {
                 return (nil, "Ошибка модели: \(error.localizedDescription)")
