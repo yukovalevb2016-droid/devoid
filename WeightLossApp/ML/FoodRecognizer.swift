@@ -74,8 +74,10 @@ final class FoodRecognizer {
 
                 let provider = try MLDictionaryFeatureProvider(dictionary: [inputName: array])
                 let out = try model.prediction(from: provider)
-                guard let dict = out.featureValue(for: "classLabelProbs")?.dictionaryValue else {
-                    return (nil, "Нет выхода classLabelProbs")
+                let probsFeature = out.featureValue(for: "classLabel_probs")
+                    ?? out.featureValue(for: "classLabelProbs")
+                guard let dict = probsFeature?.dictionaryValue else {
+                    return (nil, "Нет выхода classLabel_probs")
                 }
                 let probs = dict.compactMapValues { $0 as? Double }
                 let top = probs.sorted { $0.value > $1.value }.prefix(3)
