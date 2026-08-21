@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Core ML model (FoodClassifier)
         run: |
-          if [ -f WeightLossApp/FoodClassifier.mlmodel ]; then
+          if [ -f WeightLossApp/FoodClassifier.mlpackage ]; then
             echo "Model already present, skipping generation."
           else
             python3 -m pip install --quiet coremltools "torch==2.7.0" "torchvision==0.22.0"

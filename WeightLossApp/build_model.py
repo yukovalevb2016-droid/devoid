@@ -26,7 +26,7 @@ def main() -> None:
     mlmodel.license = "Apache-2.0"
 
     out_dir = os.path.dirname(os.path.abspath(__file__))
-    out_path = os.path.join(out_dir, "FoodClassifier.mlmodel")
+    out_path = os.path.join(out_dir, "FoodClassifier.mlpackage")
     mlmodel.save(out_path)
     print("Saved model to", out_path)
 

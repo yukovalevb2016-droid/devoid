@@ -27,7 +27,7 @@
 		FR_REMINDERS = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/RemindersView.swift; sourceTree = "<group>"; };
 		FR_INFOPLIST = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FR_ASSETS = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		FR_FOODMODEL = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = FoodClassifier.mlmodel; sourceTree = "<group>"; };
+		FR_FOODMODEL = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = FoodClassifier.mlpackage; sourceTree = "<group>"; };
 		FR_PRODUCT = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeightLossApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
