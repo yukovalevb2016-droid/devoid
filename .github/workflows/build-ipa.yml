@@ -2,8 +2,6 @@ name: Build IPA
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main ]
 
 permissions:
   contents: write
@@ -11,6 +9,11 @@ permissions:
 jobs:
   build-ipa:
     runs-on: macos-14
+    env:
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+      TEAM: ${{ secrets.APPLE_TEAM_ID }}
+      BUNDLE_ID: ${{ secrets.BUNDLE_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,26 +21,57 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-      - name: Build app (unsigned, for device)
+      - name: Set up Apple signing keychain
         run: |
-          xcodebuild build \
+          KEYCHAIN=build.keychain-db
+          security create-keychain -p "temp" "$KEYCHAIN"
+          security set-keychain-settings -t 3600 -u "$KEYCHAIN"
+          security unlock-keychain -p "temp" "$KEYCHAIN"
+          security add-generic-password -U -s "com.apple.account.AppleAccount" -a "$APPLE_ID" -w "$APPLE_PASSWORD" "$KEYCHAIN"
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          security default-keychain -s "$KEYCHAIN"
+
+      - name: Build archive
+        env:
+          CI: "true"
+        run: |
+          BID="${BUNDLE_ID:-com.example.WeightLossApp}"
+          xcodebuild archive \
             -project WeightLossApp.xcodeproj \
             -scheme WeightLossApp \
             -sdk iphoneos \
             -configuration Release \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY=""
+            -archivePath build/WeightLossApp.xcarchive \
+            PRODUCT_BUNDLE_IDENTIFIER="$BID" \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="$TEAM" \
+            -allowProvisioningUpdates
 
-      - name: Package IPA
+      - name: Export IPA
+        env:
+          CI: "true"
         run: |
-          APP=$(find ~/Library/Developer/Xcode/DerivedData -name "WeightLossApp.app" -type d | head -n1)
-          echo "Found app at: $APP"
-          mkdir -p build/ipa/Payload
-          cp -R "$APP" build/ipa/Payload/
-          cd build/ipa
-          zip -r WeightLossApp.ipa Payload
-          cd ../..
+          cat > ExportOptions.plist <<EOPL
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>development</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
+            <key>teamID</key>
+            <string>$TEAM</string>
+            <key>compileBitcode</key>
+            <false/>
+          </dict>
+          </plist>
+          EOPL
+          xcodebuild -exportArchive \
+            -archivePath build/WeightLossApp.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates
 
       - name: Publish to Release
         env:
@@ -46,5 +80,5 @@ jobs:
           gh release delete ipa --yes 2>/dev/null || true
           gh release create ipa build/ipa/WeightLossApp.ipa \
             --title "Сборка IPA" \
-            --notes "Неподписанный IPA. Ставить через AltStore/SideStore (они подпишут его твоим Apple ID)." \
+            --notes "Подписанный IPA (free Apple ID). Ставить через Sideloadly/AltStore; действует 7 дней." \
             --latest
